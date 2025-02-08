@@ -1,34 +1,57 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useState, useEffect } from 'react'
 import './App.css'
+import { Movies } from './components/RenderMovies'
+import { useMovies } from './hooks/useMovies'
+
+
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [query, setQuery] = useState('')
+  const {movies: mappedMovies} = useMovies()
+  const [error, setError] = useState(null)
+
+
+  const handleSubmit = (event) =>{
+    event.preventDefault()
+    console.log({query})
+  }
+
+  const handleChange = (event) => {
+    setQuery(event.target.value)
+  }
+
+  useEffect(() =>{
+    if(query === ''){
+      setError('Debes escribir algo para realizar la búsqueda')
+      return
+    } 
+    if(query.match(/^\d+$/)){
+      setError('La búsqueda no puede ser un número')
+      return
+    }
+    if(query.length < 3){
+      setError('La búsqueda debe tener al menos 3 caracteres')
+      return
+    }
+
+    setError(null)
+  },[query])
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div className='page'>
+
+      <header>
+        <h1>Buscador de películas</h1>
+        <form className='form' onSubmit={handleSubmit}>
+          <input onChange={handleChange}value={query} name='query' placeholder='Avenger, Star Wars, Matrix' />
+          <button  type='submit'>Buscar</button>
+        </form>
+        {error && <p style={{color: 'greenyellow', fontSize: 15, fontStyle: 'italic' }}>{error}</p>}
+      </header>
+      <main>
+        <Movies movies={mappedMovies}/>
+      </main>
+    </div>
   )
 }
 
