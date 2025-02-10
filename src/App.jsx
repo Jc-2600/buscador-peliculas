@@ -1,41 +1,24 @@
-import { useState, useEffect } from 'react'
 import './App.css'
 import { Movies } from './components/RenderMovies'
 import { useMovies } from './hooks/useMovies'
+import { useSearch } from './hooks/useSearch'
 
 
 
 function App() {
-  const [query, setQuery] = useState('')
-  const {movies: mappedMovies} = useMovies()
-  const [error, setError] = useState(null)
+  const {setQuery, error, query} = useSearch()
+  const {movies: mappedMovies, getMovies} = useMovies({query})
 
 
   const handleSubmit = (event) =>{
-    event.preventDefault()
-    console.log({query})
+    event.preventDefault()  
+    getMovies()
   }
 
   const handleChange = (event) => {
     setQuery(event.target.value)
   }
-
-  useEffect(() =>{
-    if(query === ''){
-      setError('Debes escribir algo para realizar la búsqueda')
-      return
-    } 
-    if(query.match(/^\d+$/)){
-      setError('La búsqueda no puede ser un número')
-      return
-    }
-    if(query.length < 3){
-      setError('La búsqueda debe tener al menos 3 caracteres')
-      return
-    }
-
-    setError(null)
-  },[query])
+  
 
   return (
     <div className='page'>

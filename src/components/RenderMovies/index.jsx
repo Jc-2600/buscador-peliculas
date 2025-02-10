@@ -9,9 +9,12 @@ function  renderMovies({movies})  {
             <li key={movie.id} className="card">
                 <div className='meta-data'>
                     <h2 className='title-movie'>{movie.title}</h2>
-                  <p>{movie.year}</p>
+                  <p className='year-movie'>{movie.year}</p>
                 </div>
-              <img src={movie.poster} alt={movie.title} />
+                <div className='content-image'>
+                  <img src={movie.poster} alt={movie.title} />
+                  <span className='type-movie'>{movie.type}</span>
+                </div>
             </li>
           ))
         }
